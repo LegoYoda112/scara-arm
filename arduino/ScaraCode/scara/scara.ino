@@ -5,22 +5,28 @@
 AccelStepper stepperA(1, 3, 4); // Defaults to AccelStepper::FULL4WIRE (4 pins) on 2, 3, 4, 5
 AccelStepper stepperB(1, 5, 6); 
 
+boolean moving = false;
+
 void setup()
 {  
+  Serial.begin(9600);
+  Serial.println("Scara starting");
+  Serial.println("ok");
+  
   // Change these to suit your stepper if you want
   stepperA.setMaxSpeed(500);
   stepperA.setAcceleration(200);
   stepperB.setMaxSpeed(500);
   stepperB.setAcceleration(200);
-
-  Serial.begin(9600);
 }
 
 void loop()
 {
-//    // If at the end of travel go to the other end
-//    if (stepperA.distanceToGo() == 0)
-//      //Serial.println("Done moving!");
+    // If at the end of travel go to the other end
+    if (moving && (stepperA.distanceToGo() == 0)){
+      Serial.println("ok");
+      moving = false;
+    }
 
     if(Serial.available() > 0){
       Serial.println("Started parsing");
@@ -57,6 +63,9 @@ void loop()
       
       if(cmd == "M20"){ // Move individual axis
         Serial.println("Performing axis move");
+        moving = true;
+        Serial.println(moving);
+        
         for(int i = 1; i < 5; ++i){
           
           char arg = inputArgs[i][0];
