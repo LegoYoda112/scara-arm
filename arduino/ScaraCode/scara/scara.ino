@@ -23,7 +23,7 @@ void setup()
 void loop()
 {
     // If at the end of travel go to the other end
-    if (moving && (stepperA.distanceToGo() == 0)){
+    if (moving && (stepperA.distanceToGo() == 0) && (stepperB.distanceToGo() == 0)){
       Serial.println("ok");
       moving = false;
     }
@@ -34,7 +34,7 @@ void loop()
       int inputIndex = 0;
       String inputString = "";
       String inputArgs[5];
-      Serial.print("Reciving string: ");
+      Serial.print("Receiving string: ");
       while(c != '\n'){
         delay(1);
         if(Serial.available() > 0) {
@@ -72,11 +72,6 @@ void loop()
           String valS = inputArgs[i];
           valS.remove(0, 1);
           double val = valS.toDouble();
-
-          int posA = 0;
-          int posB = 0;
-          int posC = 0;
-          int posD = 0;
           
           if(arg == 'A'){
             Serial.print("Moving axis A to: ");
@@ -94,10 +89,70 @@ void loop()
             Serial.print("Moving axis D to: ");
             Serial.println(val);
             
-          }else if(arg == 'F'){
-            Serial.print("Feed rate: ");
+          }
+        }
+      }
+
+      if(cmd == "M25"){ // Set individual axis max speeds
+        Serial.println("Setting axis max speeds");
+        moving = true;
+        Serial.println(moving);
+        
+        for(int i = 1; i < 5; ++i){
+          
+          char arg = inputArgs[i][0];
+          String valS = inputArgs[i];
+          valS.remove(0, 1);
+          double val = valS.toDouble();
+          
+          if(arg == 'A'){
+            Serial.print("Setting axis A max to: ");
             Serial.println(val);
             stepperA.setMaxSpeed(val);
+          }else if(arg == 'B'){
+            Serial.print("Setting axis B max to: ");
+            Serial.println(val);
+            stepperB.setMaxSpeed(val);
+          }else if(arg == 'C'){
+            Serial.print("Setting axis C max to: ");
+            Serial.println(val);
+            
+          }else if(arg == 'D'){
+            Serial.print("Setting axis D max to: ");
+            Serial.println(val);
+            
+          }
+        }
+      }
+
+      if(cmd == "M26"){ // Set individual acceleration
+        Serial.println("Setting axis acceleration");
+        moving = true;
+        Serial.println(moving);
+        
+        for(int i = 1; i < 5; ++i){
+          
+          char arg = inputArgs[i][0];
+          String valS = inputArgs[i];
+          valS.remove(0, 1);
+          double val = valS.toDouble();
+          
+          if(arg == 'A'){
+            Serial.print("Setting axis A accel to: ");
+            Serial.println(val);
+            stepperA.setAcceleration(val);
+          }else if(arg == 'B'){
+            Serial.print("Setting axis B accel to: ");
+            Serial.println(val);
+            stepperB.setAcceleration(val);
+          }else if(arg == 'C'){
+            Serial.print("Setting axis C accel to: ");
+            Serial.println(val);
+            
+          }else if(arg == 'D'){
+            Serial.print("Setting axis D accel to: ");
+            Serial.println(val);
+            
           }
         }
       }

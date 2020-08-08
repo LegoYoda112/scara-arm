@@ -3,9 +3,8 @@ import scara
 arm = scara.Scara("COM7")
 arm.debugOn()
 arm.init()
-arm.setMoveFeed(200)
+arm.setAxisABMaxSpeed(90,90)
+arm.setAxisABAccel(70,70)
 
-arm.moveAxisATo(100)
-arm.moveAxisBTo(-100)
-arm.moveAxisABTo(420,0)
-print(arm.A_deg)
+arm.moveAxisABTo(90,-90)
+arm.moveAxisABTo(0,0)
