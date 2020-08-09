@@ -9,7 +9,8 @@ boolean moving = false;
 
 void setup()
 {  
-  Serial.begin(9600);
+  Serial.begin(115200);
+  delay(500);
   Serial.println("Scara starting");
   Serial.println("ok");
   
@@ -29,18 +30,18 @@ void loop()
     }
 
     if(Serial.available() > 0){
-      Serial.println("Started parsing");
+      //Serial.println("Started parsing");
       char c = 'a';
       int inputIndex = 0;
       String inputString = "";
       String inputArgs[5];
-      Serial.print("Receiving string: ");
+      //Serial.print("Receiving string: ");
       while(c != '\n'){
         delay(1);
         if(Serial.available() > 0) {
           c = Serial.read();
           inputString += c;
-          Serial.print(c);
+          //Serial.print(c);
         }
         
         if(c == ' '){
@@ -62,9 +63,8 @@ void loop()
       String cmd = inputArgs[0];
       
       if(cmd == "M20"){ // Move individual axis
-        Serial.println("Performing axis move");
+        //Serial.println("Performing axis move");
         moving = true;
-        Serial.println(moving);
         
         for(int i = 1; i < 5; ++i){
           
@@ -91,12 +91,9 @@ void loop()
             
           }
         }
-      }
-
-      if(cmd == "M25"){ // Set individual axis max speeds
+      }else if(cmd == "M25"){ // Set individual axis max speeds
         Serial.println("Setting axis max speeds");
         moving = true;
-        Serial.println(moving);
         
         for(int i = 1; i < 5; ++i){
           
@@ -118,17 +115,14 @@ void loop()
             Serial.println(val);
             
           }else if(arg == 'D'){
-            Serial.print("Setting axis D max to: ");
+            //Serial.print("Setting axis D max to: ");
             Serial.println(val);
             
           }
         }
-      }
-
-      if(cmd == "M26"){ // Set individual acceleration
+      }else if(cmd == "M26"){ // Set individual acceleration
         Serial.println("Setting axis acceleration");
         moving = true;
-        Serial.println(moving);
         
         for(int i = 1; i < 5; ++i){
           
@@ -151,6 +145,35 @@ void loop()
             
           }else if(arg == 'D'){
             Serial.print("Setting axis D accel to: ");
+            Serial.println(val);
+            
+          }
+        }
+      }else if(cmd == "M27"){ // Set individual position
+        Serial.println("Setting axis position");
+        moving = true;
+        
+        for(int i = 1; i < 5; ++i){
+          
+          char arg = inputArgs[i][0];
+          String valS = inputArgs[i];
+          valS.remove(0, 1);
+          double val = valS.toDouble();
+          
+          if(arg == 'A'){
+            Serial.print("Setting axis A pos to: ");
+            Serial.println(val);
+            stepperA.setCurrentPosition(val);
+          }else if(arg == 'B'){
+            Serial.print("Setting axis B pos to: ");
+            Serial.println(val);
+            stepperB.setCurrentPosition(val);
+          }else if(arg == 'C'){
+            Serial.print("Setting axis C pos to: ");
+            Serial.println(val);
+            
+          }else if(arg == 'D'){
+            Serial.print("Setting axis D pos to: ");
             Serial.println(val);
             
           }
